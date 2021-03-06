@@ -11,7 +11,6 @@ namespace FirstTutorial
         {
             var url = args[0];
 
-
             using (var httpClient = new HttpClient())
             {
                 HttpResponseMessage response = await httpClient.GetAsync(url);
