@@ -1,39 +1,37 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace FirstTutorial
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            // AddStudent() - PascalCase
-            // addStudent() - camelCase
+            var url = args[0];
 
-            Console.WriteLine("Hello World!");
 
-            var stud = new Student
+            using (var httpClient = new HttpClient())
             {
-                FirstName = "Piotr",
-                Age = 23
-            };
-
-            // Interpolacje stringa
-            Console.WriteLine($"Imie studenta to: {stud.FirstName} i ma {stud.Age} lat");
-
-            var tmp = "ABC";
-            tmp = "CBA";
+                HttpResponseMessage response = await httpClient.GetAsync(url);
 
 
-            var list = new List<string> {"Ala", "ma", "kota"};
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
 
+                    var regex = new Regex("[a-z]+[a-z0-9-]*@[a-z-]+\\.[a-z]+", RegexOptions.IgnoreCase);
 
-            foreach (var wrt in list)
-            {
-                Console.WriteLine(wrt);
+                    var emailAddresses = regex.Matches(content);
+
+                    foreach (var match in emailAddresses)
+                    {
+                        Console.WriteLine(match.ToString());
+                    }
+                }
+
             }
-
 
         }
     }
